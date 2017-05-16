@@ -12,6 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from mir.steiner import ahiru
+import argparse
+import sys
 
-ahiru.main()
+from mir.steiner import commands
+
+
+def main(args=None):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('command', choices=commands.COMMANDS)
+    parser.add_argument('command_args', nargs=argparse.REMAINDER)
+    args = parser.parse_args(args)
+    cmd = commands.COMMANDS[args.command]
+    return cmd(args.command_args)
+
+
+if __name__ == '__main__':
+    sys.exit(main())

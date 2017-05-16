@@ -13,3 +13,12 @@
 # limitations under the License.
 
 __version__ = '0.1.0'
+
+from pathlib import Path
+
+
+def generate_hashes(dirpath: 'PathLike'):
+    """Generate hashes recursively for a directory."""
+    dirpath = Path(dirpath)
+    for path in dirpath.glob('**/*'):
+        print(path)

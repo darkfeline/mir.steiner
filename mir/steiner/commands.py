@@ -12,15 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import sys
+import argparse
+import collections
+from pathlib import Path
+
+from mir import steiner
+
+COMMANDS = collections.OrderedDict()
 
 
-def quack():
-    """Quack like a duck."""
-    return 'quack'
+def _command(name):
+    def decorator(func):
+        COMMANDS[name] = func
+        return func
+    return decorator
 
 
-def main(args=None):
-    if args is None:
-        args = sys.argv[1:]
-    print(quack())
+@_command('hash')
+def hash_command(args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('dirpath', type=Path)
+    args = parser.parse_args(args)
+    steiner.generate_hashes(args.dirpath)
