@@ -35,7 +35,7 @@ def generate_hashes(dirpath: 'PathLike',
             f.write('\n')
 
 
-def _feed_hash(hash, file, blocksize=32768):
+def _feed_hash(hash, file, blocksize=8192):
     """Feed a binary file to a hash object."""
     while True:
         d = file.read(blocksize)
