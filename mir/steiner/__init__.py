@@ -14,11 +14,31 @@
 
 __version__ = '0.1.0'
 
+import hashlib
 from pathlib import Path
 
 
-def generate_hashes(dirpath: 'PathLike'):
+def generate_hashes(dirpath: 'PathLike',
+                    hashfunc=hashlib.blake2b,
+                    extension='.blake2b'):
     """Generate hashes recursively for a directory."""
     dirpath = Path(dirpath)
     for path in dirpath.glob('**/*'):
-        print(path)
+        if not path.is_file():
+            continue
+        h = hashfunc()
+        with path.open('rb') as f:
+            _feed_hash(h, f)
+        hpath = path.parent / (path.name + extension)
+        with hpath.open('w') as f:
+            f.write(h.hexdigest())
+            f.write('\n')
+
+
+def _feed_hash(hash, file, blocksize=32768):
+    """Feed a binary file to a hash object."""
+    while True:
+        d = file.read(blocksize)
+        if not d:
+            return
+        hash.update(d)
